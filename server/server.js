@@ -28,11 +28,27 @@ io.on('connection', (socket) => {
   socket.on('createMessage', (message) => {
     console.log('createMessage', message);
 
+    socket.emit('newMessage', {
+      from: 'Admin',
+      text: `Hi ${message.from}! Welcome back!`
+    });
+
+    socket.broadcast.emit('newMessage', {
+      from: 'Admin',
+      text: `${message.from} has joined the room`
+    });
+
     io.emit('newMessage',{
       from: message.from,
       text: message.text,
       createdAt: new Date().getTime()
     }); //socket.emit() sends to specific connection whereas io.emit() sends to all connections
+
+    // socket.broadcast.emit('newMessage',{
+    //     from: message.from,
+    //     text: message.text,
+    //     createdAt: new Date().getTime()
+    // });  // firing the emi to .broadcast method will fire to all users but except the one who initiated
 
   })
 
