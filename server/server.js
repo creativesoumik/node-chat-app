@@ -7,7 +7,9 @@ const express = require('express'); // webserver
 var app = express();
 app.use(express.static(publicPath));
 
-
+app.get('/',function(req,res){
+      res.sendFile(publicPath + "/index.html");
+});
 
 app.listen(port, () => {
   console.log(`Started up at port ${port}`);
