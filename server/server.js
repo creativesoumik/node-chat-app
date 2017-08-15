@@ -27,6 +27,13 @@ io.on('connection', (socket) => {
 
   socket.on('createMessage', (message) => {
     console.log('createMessage', message);
+
+    io.emit('newMessage',{
+      from: message.from,
+      text: message.text,
+      createdAt: new Date().getTime()
+    }); //socket.emit() sends to specific connection whereas io.emit() sends to all connections
+
   })
 
   socket.on('disconnect', () => {
