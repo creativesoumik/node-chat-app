@@ -19,9 +19,21 @@ var io = socketIO(server); // socket.io automatically sends this file to client 
 io.on('connection', (socket) => {
   console.log('New user connected');
 
+  socket.emit('newMessage', { // send a object to event
+    from: 'mike@example.com',
+    text: 'Hey, what is going on?',
+    createdAt: new Date().getTime(),
+  });
+
+  socket.on('createMessage', (message) => {
+    console.log('createMessage', message);
+  })
+
   socket.on('disconnect', () => {
     console.log('Disconnected from client');
   });
+
+
 
 }); //lets you register a event listner
 
