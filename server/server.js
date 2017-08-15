@@ -1,72 +1,39 @@
 const path = require('path');
 const http = require('http');
-const publicPath = path.join(__dirname, '/../public');
+const express = require('express');
+const socketIO = require('socket.io');
+
+const {generateMessage} = require('./utils/message');
+const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
-
-const express = require('express'); // webserver
-const socketIO = require('socket.io'); // webserver
-
 var app = express();
-// var server = http.createServer((req, res) => {
-//
-// })
-
-// or we can directly use the express ap to create http server
-
 var server = http.createServer(app);
-var io = socketIO(server); // socket.io automatically sends this file to client http://localhost:3000/socket.io/socket.io.js
+var io = socketIO(server);
+
+app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
   console.log('New user connected');
 
-  socket.emit('newMessage', { // send a object to event
-    from: 'mike@example.com',
-    text: 'Hey, what is going on?',
-    createdAt: new Date().getTime(),
-  });
+  socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
+
+  socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined'));
 
   socket.on('createMessage', (message) => {
     console.log('createMessage', message);
-
-    socket.emit('newMessage', {
-      from: 'Admin',
-      text: `Hi ${message.from}! Welcome back!`
-    });
-
-    socket.broadcast.emit('newMessage', {
-      from: 'Admin',
-      text: `${message.from} has joined the room`
-    });
-
-    io.emit('newMessage',{
-      from: message.from,
-      text: message.text,
-      createdAt: new Date().getTime()
-    }); //socket.emit() sends to specific connection whereas io.emit() sends to all connections
-
-    // socket.broadcast.emit('newMessage',{
-    //     from: message.from,
-    //     text: message.text,
-    //     createdAt: new Date().getTime()
-    // });  // firing the emi to .broadcast method will fire to all users but except the one who initiated
-
-  })
-
-  socket.on('disconnect', () => {
-    console.log('Disconnected from client');
+    io.emit('newMessage', generateMessage(message.from, message.text));
+    // socket.broadcast.emit('newMessage', {
+    //   from: message.from,
+    //   text: message.text,
+    //   createdAt: new Date().getTime()
+    // });
   });
 
-
-
-}); //lets you register a event listner
-
-app.use(express.static(publicPath));
-
-
-// app.get('/',function(req,res){
-//       res.sendFile(publicPath + "/index.html");
-// });
+  socket.on('disconnect', () => {
+    console.log('User was disconnected');
+  });
+});
 
 server.listen(port, () => {
-  console.log(`Started up at port ${port}`);
+  console.log(`Server is up on ${port}`);
 });
