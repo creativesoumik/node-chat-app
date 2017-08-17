@@ -19,9 +19,18 @@ io.on('connection', (socket) => {
 
   socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined'));
 
-  socket.on('createMessage', (message) => {
+  //use the callback function to send event acknoledgements to clients - this is appliable for both client and server
+  socket.on('createMessage', (message, callback) => {
     console.log('createMessage', message);
     io.emit('newMessage', generateMessage(message.from, message.text));
+
+    if (callback) {
+      callback('This is from the server');
+    }
+
+
+    // send data to client by assigning object to the callback arguement
+
     // socket.broadcast.emit('newMessage', {
     //   from: message.from,
     //   text: message.text,
