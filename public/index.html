@@ -33,11 +33,45 @@
 
   </div>
 
+  <!-- create a mustache.js template -->
+  <script id="message-template" type="text/template">
+    <p class="">
+      <li class="message">
+        <div class="message__title">
+          <h4>{{from}}</h4>
+          <span>{{createdAt}}</span>
+        </div>
+        <div class="message__body">
+          <p class="">
+            {{text}}
+          </p>
+        </div>
+      </li>
+    </p>
+  </script>
+
+  <script id="location-message-template" type="text/template">
+    <p class="">
+      <li class="message">
+        <div class="message__title">
+          <h4>{{from}}</h4>
+          <span>{{createdAt}}</span>
+        </div>
+        <div class="message__body">
+          <p class="">
+            <a target="_blank" href="{{url}}">My current location</a>
+          </p>
+        </div>
+      </li>
+    </p>
+  </script>
+
 
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="/js/libs/jquery-3.2.1.min.js"></script>
-  <script src="/js/libs/moment.js"></script>
+  <script src="/js/libs/moment.js"></script><!--  javascript date time library -->
+  <script src="/js/libs/mustache.js"></script><!--  javascript template engine for html temples -->
   <script src="/js/index.js"></script>
 </body>
 
