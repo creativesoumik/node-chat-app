@@ -50,12 +50,14 @@ io.on('connection', (socket) => {
   //use the callback function to send event acknoledgements to clients - this is appliable for both client and server
   socket.on('createMessage', (message, callback) => {
     console.log('createMessage', message);
-    io.emit('newMessage', generateMessage(message.from, message.text));
 
-    if (callback) {
-      callback();
+    var user = users.getUser(socket.id);
+    if (user && isRealString(message.text)) {
+      io.to(user.room).emit('newMessage', generateMessage(user.name, message.text));
     }
 
+
+    callback();
 
     // send data to client by assigning object to the callback arguement
 
@@ -68,7 +70,13 @@ io.on('connection', (socket) => {
 
 
   socket.on('createLocationMessage', (coords) => {
-    io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
+
+    var user = users.getUser(socket.id);
+    if (user) {
+      io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));
+    }
+
+
   });
 
   socket.on('disconnect', () => {
