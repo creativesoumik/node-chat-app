@@ -4,20 +4,48 @@ const express = require('express');
 const socketIO = require('socket.io');
 
 const {generateMessage, generateLocationMessage} = require('./utils/message');
+const {isRealString} = require('./utils/validation');
+const {Users} = require('./utils/users');
+
+
+
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
 var app = express();
 var server = http.createServer(app);
 var io = socketIO(server);
+var users = new Users();
 
 app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
   console.log('New user connected');
 
-  socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
 
-  socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined'));
+
+  //join room
+  socket.on('join', (params, callback) => {
+    if (!isRealString(params.name) || !isRealString(params.room)) {
+      return callback('Name and room are required.'); // use return not to allow any code below to work
+    }
+
+    socket.join(params.room); // joining a socket room by any string, in this case the room name from index form
+    // socket.leave // leave from room
+    users.removeUser(socket.id);
+    users.addUser(socket.id, params.name, params.room);
+
+    io.to(params.room).emit('updateUserList', users.getUserList(params.room));
+
+    //io.emit --> io.to('The Room Name').emit() //emits to every single user
+    //socket.broadcast.emit --> socket.broadcast.to('The room name').emit() //every one but except current user
+    //socket.emit --> specific to one user
+
+    socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
+    //broadcast to everyone but except who initiated
+    socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined`));
+
+    callback();
+  });
 
   //use the callback function to send event acknoledgements to clients - this is appliable for both client and server
   socket.on('createMessage', (message, callback) => {
@@ -45,6 +73,18 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log('User was disconnected');
+
+    var user = users.removeUser(socket.id);
+
+    //if a user was removed and we are going to perform some action.
+    if (user) {
+      io.to(user.room).emit('updateUserList', users.getUserList(user.room));
+      io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} has left`));
+    }
+
+
+
+
   });
 });
 
