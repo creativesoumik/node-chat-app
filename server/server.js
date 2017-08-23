@@ -29,12 +29,14 @@ io.on('connection', (socket) => {
       return callback('Name and room are required.'); // use return not to allow any code below to work
     }
 
-    socket.join(params.room); // joining a socket room by any string, in this case the room name from index form
+    var roomName = params.room.toUpperCase();
+
+    socket.join(roomName); // joining a socket room by any string, in this case the room name from index form
     // socket.leave // leave from room
-    
+
     users.removeUser(socket.id);
-    users.addUser(socket.id, params.name, params.room);
-    io.to(params.room).emit('updateUserList', users.getUserList(params.room));
+    users.addUser(socket.id, params.name, roomName);
+    io.to(roomName).emit('updateUserList', users.getUserList(roomName));
 
     //io.emit --> io.to('The Room Name').emit() //emits to every single user
     //socket.broadcast.emit --> socket.broadcast.to('The room name').emit() //every one but except current user
