@@ -29,6 +29,10 @@ class Users {
     return this.users.filter((user) => user.id === id)[0]; //[0] is to return only one user incase multiple users found, if nothing found it will return undefined
   }
 
+  findUser(name, room){
+    return this.users.filter((user) => user.name === name && user.room === room)[0]; //[0] is to return only one user incase multiple users found, if nothing found it will return undefined
+  }
+
   getUserList(room){
     var users = this.users.filter((user) => user.room === room); // filter function includes or excludes items in an array based on criteria given. Like in this case it is returning the users whose room name matches the argument passed in the getUserList function.
 

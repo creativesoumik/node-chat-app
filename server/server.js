@@ -31,22 +31,34 @@ io.on('connection', (socket) => {
 
     var roomName = params.room.toUpperCase();
 
-    socket.join(roomName); // joining a socket room by any string, in this case the room name from index form
-    // socket.leave // leave from room
+    var user = users.findUser(params.name, roomName);
 
-    users.removeUser(socket.id);
-    users.addUser(socket.id, params.name, roomName);
-    io.to(roomName).emit('updateUserList', users.getUserList(roomName));
+    if (user) {
+      socket.join(roomName); // joining a socket room by any string, in this case the room name from index form
+      // socket.leave // leave from room
 
-    //io.emit --> io.to('The Room Name').emit() //emits to every single user
-    //socket.broadcast.emit --> socket.broadcast.to('The room name').emit() //every one but except current user
-    //socket.emit --> specific to one user
+      users.removeUser(user.id);
+      users.addUser(user.id, user.name, roomName);
+      io.to(roomName).emit('updateUserList', users.getUserList(roomName));
+    } else {
+      socket.join(roomName); // joining a socket room by any string, in this case the room name from index form
+      // socket.leave // leave from room
 
-    socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
-    //broadcast to everyone but except who initiated
-    socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined`));
+      users.removeUser(socket.id);
+      users.addUser(socket.id, params.name, roomName);
+      io.to(roomName).emit('updateUserList', users.getUserList(roomName));
+
+      //io.emit --> io.to('The Room Name').emit() //emits to every single user
+      //socket.broadcast.emit --> socket.broadcast.to('The room name').emit() //every one but except current user
+      //socket.emit --> specific to one user
+
+      socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
+      //broadcast to everyone but except who initiated
+      socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined`));
+    }
 
     callback();
+
   });
 
   //use the callback function to send event acknoledgements to clients - this is appliable for both client and server

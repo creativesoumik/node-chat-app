@@ -58,16 +58,26 @@ describe('Users', () => {
     expect(users.users.length).toBe(3); // expect the users list remained same
   });
 
-  it('should find a user', () => {
+  it('should get a user', () => {
     var userId = '2';
     var user = users.getUser(userId);
     expect(user.id).toBe(userId);
   });
 
-  it('should not find a user', () => {
+  it('should not get a user', () => {
     var userId = '5';
     var user = users.getUser(userId);
     expect(user).toNotExist();
+  });
+
+  it('should find a user in a room', () => {
+
+    var name = 'Mike';
+    var room = 'Node Course';
+    var user = users.findUser(name, room);
+
+    expect(user.name).toBe(name);
+    expect(user.room).toBe(room);
   });
 
   it('should return names for node course', () => {
