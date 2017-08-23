@@ -32,6 +32,8 @@ socket.on('connect', function () {
   //start the room process
   var params = jQuery.deparam(window.location.search);
 
+
+
   socket.emit('join', params, function(err){
     if (err) {
       alert(err);
@@ -40,6 +42,8 @@ socket.on('connect', function () {
       console.log('No error');
     }
   });
+
+  $('#room').html(params.room);
 
 });
 

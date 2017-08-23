@@ -31,9 +31,9 @@ io.on('connection', (socket) => {
 
     socket.join(params.room); // joining a socket room by any string, in this case the room name from index form
     // socket.leave // leave from room
+    
     users.removeUser(socket.id);
     users.addUser(socket.id, params.name, params.room);
-
     io.to(params.room).emit('updateUserList', users.getUserList(params.room));
 
     //io.emit --> io.to('The Room Name').emit() //emits to every single user

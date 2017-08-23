@@ -8,15 +8,15 @@
   </head>
   <body class="centered-form">
     <div class="centered-form__form">
-      <form action="/chat.html" method="get">
+      <form action="/chat.html" method="get" id="join-form">
         <h3>Join a Chat</h3>
         <div class="form-field">
           <label>Display Name</label>
-          <input type="text" name="name" autofocus>
+          <input type="text" name="name" id="name" autofocus>
         </div>
         <div class="form-field">
           <label>Room Name</label>
-          <input type="text" name="room">
+          <input type="text" name="room" id="room">
         </div>
         <div class="form-field">
             <button type="submit">Join</button>
@@ -26,3 +26,15 @@
     </div>
   </body>
 </html>
+<script src="/js/libs/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+jQuery('#join-form').on('submit', function(e){
+    e.preventDefault();
+
+    $('#room').val (function () {
+    return this.value.toUpperCase();
+    });
+    window.location = '/chat.html?name='+$('#name').val()+'&room='+$('#room').val();
+    //jQuery('#join-form').submit();
+});
+</script>
