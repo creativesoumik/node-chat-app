@@ -41,6 +41,14 @@ class Users {
 
     return namesArray;
   }
+
+  getRoomList(){   
+
+    //map function (also gets calles with individual items), map gives us the value we want to use instead. like in this case we want to pick only the user's names from the list and thus returing only that.
+    var roomsArray = this.users.map((user) => user.room);
+
+    return roomsArray;
+  }
 }
 
 //addUser(id, name, room)

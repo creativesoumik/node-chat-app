@@ -24,6 +24,9 @@ io.on('connection', (socket) => {
   console.log('New user connected');
 
 
+  io.emit('updateRoomList', users.getRoomList());
+
+
 
   //join room
   socket.on('join', (params, callback) => {
@@ -112,6 +115,30 @@ io.on('connection', (socket) => {
     //   text: message.text,
     //   createdAt: new Date().getTime()
     // });
+  });
+
+
+  //use the callback function to send event acknoledgements to clients - this is appliable for both client and server
+  socket.on('userTyping', (userId, callback) => {
+
+
+     var user = users.getUser(userId);
+
+     console.log('typing', user.name);
+
+     if (user) {
+
+       //socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined`));
+
+       socket.broadcast.to(user.room).emit('showUserTyping', {
+         userId: userId,
+         msg: `<div id="${userId}" class="userTypingLabel">${user.name} is typing..</div>`
+       });
+
+     }
+
+    callback();
+
   });
 
 

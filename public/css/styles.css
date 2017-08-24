@@ -185,3 +185,57 @@ button {
   margin-bottom: 5px;
   font-size: 12px;
 }
+
+.typingArea ul {
+    position: absolute;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.typingArea ul li {
+    float: left;
+    margin-left: 10px;
+}
+
+
+.userTypingLabel{
+  float: left;
+  margin-left: 10px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**/

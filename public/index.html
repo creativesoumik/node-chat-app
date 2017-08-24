@@ -18,6 +18,14 @@
           <label>Room Name</label>
           <input type="text" name="room" id="room">
         </div>
+
+        <div class="form-field">
+          <label>Available Rooms</label>
+          <select class="" id="roomsList">
+
+          </select>
+        </div>
+
         <div class="form-field">
             <button type="submit">Join</button>
         </div>
@@ -26,13 +34,52 @@
     </div>
   </body>
 </html>
+
+<script src="/socket.io/socket.io.js"></script>
 <script src="/js/libs/jquery-3.2.1.min.js"></script>
 <script src="/js/libs/deparam.js"></script><!--  javascript library by andrew to parse JS urls parameters  -->
 <script>
+
 //start the room process
 var params = jQuery.deparam(window.location.search);
 if (params.room) {
-  $('#room').val(params.room);
+  $('#room').val(params.room).attr('readonly', true);;
 }
+
+var socket = io();
+socket.on('connect', function () {
+  //console.log('Connected to server');
+
+  socket.on('updateRoomList', function (rooms){
+    //console.log('rooms list', rooms);
+    if (rooms.length >= 1) {
+      var op = '<option>Select</option>';
+      rooms.forEach(function(room){
+        op += '<option>'+room+'</option>';
+      });
+
+      jQuery('#roomsList').html(op);
+    } else {
+      jQuery('#roomsList').html('<option disabled="true" selected>No rooms available</option>');
+    }
+
+  });
+
+});
+
+$('#roomsList').change(function() {
+  $( "select option:selected" ).each(function() {
+      str = $( this ).val();
+  });
+
+  if (str !== 'Select') {
+    $( "#room" ).val( str );
+  } else {
+    $( "#room" ).val( '' );
+  }
+
+});
+
+
 
 </script>

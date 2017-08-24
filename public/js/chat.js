@@ -12,12 +12,14 @@ function scrollToBottom() {
   var scrollTop = messages.prop('scrollTop');
   var scrollHeight = messages.prop('scrollHeight');
   var newMessageHeight = newMessage.innerHeight();
-  var lastMessageHeight = newMessage.prev().innerHeight();
+  var lastMessageHeight = newMessage.closest('li').prev().innerHeight();
 
   // console.log(newMessage.html());
   // alert(newMessage.html());
 
-  //var total1 = clientHeight + scrollTop + newMessageHeight + lastMessageHeight;
+  var total1 = clientHeight + scrollTop + newMessageHeight + lastMessageHeight;
+  console.log('scrollHeight', scrollHeight);
+  console.log('total1', lastMessageHeight);
   //alert(messages.html());
 
 
@@ -66,6 +68,8 @@ socket.on('newMessage', function (message) {
   //console.log('newMessage', message);
 
   var formattedTime = moment(message.createdAt).format('h:mm a');
+
+
 
   // var li = jQuery('<li></li>');
   // li.text(`${message.from} ${formattedTime}: ${message.text}`);
@@ -127,7 +131,9 @@ jQuery('#invite-form').on('submit', function(e){
     var invitedEmails = jQuery('[name=emails]');
 
     socket.emit('sendInvitation',invitedEmails.val(),function(){
-      invitedEmails.val('');
+      $('#invite-modal').modal('toggle', function () {
+        invitedEmails.val('');
+      });
     });
 });
 
@@ -151,3 +157,29 @@ locationButton.on('click', function(){
   }) //takes two function
 
 });
+
+
+
+jQuery('[name=message]').bind('input',function (err) {
+  socket.emit('userTyping', socket.id, function(err){
+    // if (err) {
+    //   alert(err);
+    //   window.location.href = '/';
+    // } else {
+    //   console.log('No error');
+    // }
+  });
+});
+
+
+socket.on('showUserTyping', function (user) {
+  var typingArea = $('.typingArea');
+  $('#'+user.userId).remove();
+  typingArea.append('<div class="userTypingLabel" id="'+user.userid+'">'+user.msg+'</div>');
+
+  setTimeout(function() {
+      $('#'+user.userId).fadeOut('fast');
+  }, 1000); // <-- time in milliseconds
+
+
+})
