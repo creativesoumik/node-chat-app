@@ -27,3 +27,12 @@
   </body>
 </html>
 <script src="/js/libs/jquery-3.2.1.min.js"></script>
+<script src="/js/libs/deparam.js"></script><!--  javascript library by andrew to parse JS urls parameters  -->
+<script>
+//start the room process
+var params = jQuery.deparam(window.location.search);
+if (params.room) {
+  $('#room').val(params.room);
+}
+
+</script>

@@ -6,6 +6,7 @@ const socketIO = require('socket.io');
 const {generateMessage, generateLocationMessage} = require('./utils/message');
 const {isRealString} = require('./utils/validation');
 const {Users} = require('./utils/users');
+const {Mailer} = require('./utils/mailer');
 
 
 
@@ -15,6 +16,7 @@ var app = express();
 var server = http.createServer(app);
 var io = socketIO(server);
 var users = new Users();
+var mailer = new Mailer();
 
 app.use(express.static(publicPath));
 
@@ -50,9 +52,10 @@ io.on('connection', (socket) => {
 
       //io.emit --> io.to('The Room Name').emit() //emits to every single user
       //socket.broadcast.emit --> socket.broadcast.to('The room name').emit() //every one but except current user
-      //socket.emit --> specific to one user
 
+      //socket.emit --> specific to one user
       socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
+
       //broadcast to everyone but except who initiated
       socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined`));
     }
@@ -69,6 +72,35 @@ io.on('connection', (socket) => {
     if (user && isRealString(message.text)) {
       io.to(user.room).emit('newMessage', generateMessage(user.name, message.text));
     }
+
+
+    callback();
+
+    // send data to client by assigning object to the callback arguement
+
+    // socket.broadcast.emit('newMessage', {
+    //   from: message.from,
+    //   text: message.text,
+    //   createdAt: new Date().getTime()
+    // });
+  });
+
+
+  //use the callback function to send event acknoledgements to clients - this is appliable for both client and server
+  socket.on('sendInvitation', (emails, callback) => {
+    console.log('emails to invite', emails);
+
+     var user = users.getUser(socket.id);
+     if (user) {
+
+       mailer.send(`Soumik ChatApp<info@pixondesign.com>`, emails, 'Join my chat room', `
+         <p>${user.name} has requested you to join his private chat room :</p>
+         <p><a href="https://obscure-springs-48742.herokuapp.com/?room=${user.room}">Go To Room</a></p>`, () => {
+           //call back
+         });
+
+       socket.emit('newMessage', generateMessage('Admin', 'Your friends have been invited'));
+     }
 
 
     callback();

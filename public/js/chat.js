@@ -121,6 +121,16 @@ jQuery('#message-form').on('submit', function(e){
     });
 });
 
+jQuery('#invite-form').on('submit', function(e){
+    e.preventDefault();
+
+    var invitedEmails = jQuery('[name=emails]');
+
+    socket.emit('sendInvitation',invitedEmails.val(),function(){
+      invitedEmails.val('');
+    });
+});
+
 var locationButton = jQuery('#send-location');
 locationButton.on('click', function(){
   if (!navigator.geolocation) {

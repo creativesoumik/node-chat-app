@@ -56,20 +56,38 @@ class Users {
 
 class Person {
 
-   constructor (name, age){
-     this.name = name; //refer this for the current initiated object
-     this.age = age;
+   constructor (){
+     this.persons = [];
    }
 
-   getUserDescription(){
-     return `${this.name} is ${this.age} year(s) old`;
+   addPerson(name){
+     var p = {name}; // In ES6 variable and property name are same can use only the variable name
+     //console.log(name);
+     this.persons.push(p); //push the user to the array
+     //console.log(this.persons);
+     return p;
+   }
+
+   getPersonList(){
+
+     var namesArray = this.persons.map((person) => person.name);
+     //console.log(this.persons);
+     return namesArray;
    }
 
 }
 
-var me = new Person('Soumik', 37);
-var description = me.getUserDescription();
-console.log('this.name', me.name);
+var me = new Person();
+me.addPerson('Soumik');
 
+var son = new Person();
+son.addPerson('Aryan');
+
+var wife = new Person();
+wife.addPerson('Piu');
+
+var listOfPersons = wife.getPersonList();
+
+//console.log('Persons', listOfPersons);
 
 module.exports = {Users};
