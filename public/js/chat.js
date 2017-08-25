@@ -12,7 +12,7 @@ function scrollToBottom() {
   var scrollTop = messages.prop('scrollTop');
   var scrollHeight = messages.prop('scrollHeight');
   var newMessageHeight = newMessage.innerHeight();
-  var lastMessageHeight = newMessage.closest('li').prev().innerHeight();
+  var lastMessageHeight = 40; //newMessage.prev().innerHeight(); //bootstrap conflict, had to put direct value
 
   // console.log(newMessage.html());
   // alert(newMessage.html());
