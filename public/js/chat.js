@@ -80,6 +80,7 @@ socket.on('newMessage', function (message) {
   var html = Mustache.render(template, {
     text: message.text,
     from: message.from,
+    randColor: message.randColor,
     createdAt : formattedTime
   });
 

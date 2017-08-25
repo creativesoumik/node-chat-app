@@ -21,7 +21,7 @@ var mailer = new Mailer();
 app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
-  console.log('New user connected');
+  //console.log('New user connected');
 
 
   io.emit('updateRoomList', users.getRoomList());
@@ -69,7 +69,7 @@ io.on('connection', (socket) => {
 
   //use the callback function to send event acknoledgements to clients - this is appliable for both client and server
   socket.on('createMessage', (message, callback) => {
-    console.log('createMessage', message);
+    //console.log('createMessage', message);
 
     var user = users.getUser(socket.id);
     if (user && isRealString(message.text)) {
@@ -91,7 +91,7 @@ io.on('connection', (socket) => {
 
   //use the callback function to send event acknoledgements to clients - this is appliable for both client and server
   socket.on('sendInvitation', (emails, callback) => {
-    console.log('emails to invite', emails);
+    //console.log('emails to invite', emails);
 
      var user = users.getUser(socket.id);
      if (user) {
@@ -124,7 +124,7 @@ io.on('connection', (socket) => {
 
      var user = users.getUser(userId);
 
-     console.log('typing', user.name);
+     //console.log('typing', user.name);
 
      if (user) {
 
@@ -153,7 +153,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    console.log('User was disconnected');
+    //console.log('User was disconnected');
 
     var user = users.removeUser(socket.id);
 
