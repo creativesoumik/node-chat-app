@@ -206,7 +206,12 @@ button {
 }
 
 
-
+.message__title .label-primary{
+  line-height: 10px;
+  color: #fff;
+  font-size: 11px;
+  margin-right: 3px;
+}
 
 
 

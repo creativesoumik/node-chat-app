@@ -6,7 +6,7 @@
   <meta charset="utf-8">
     <title>Chat | ChatApp</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 
@@ -74,11 +74,11 @@
     <p class="">
       <li class="message">
         <div class="message__title">
-          <h4>{{from}}</h4>
+          <span class="label label-primary" style="background-color:{{randColor}}">{{from}}</span>
           <span>{{createdAt}}</span>
         </div>
         <div class="message__body">
-          <p class="" style="color:{{randColor}}">
+          <p class="" style="color:">
             {{text}}
           </p>
         </div>
@@ -106,7 +106,7 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="/js/libs/jquery-3.2.1.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="/css/bootstrap.min.js"></script>
   <script src="/js/libs/moment.js"></script><!--  javascript date time library -->
   <script src="/js/libs/mustache.js"></script><!--  javascript template engine for html temples -->
   <script src="/js/libs/deparam.js"></script><!--  javascript library by andrew to parse JS urls parameters  -->
