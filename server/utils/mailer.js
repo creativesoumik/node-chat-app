@@ -13,46 +13,6 @@ const getUserPass = ()=>{
 
 
 
-/*
-class Mailer {
-
-
-  send(from, to, subject, emailBody, callback) {
-    var transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: 'classicweddingimages@gmail.com',
-        pass: 'cla123321'
-      }
-    });
-
-    var mailOptions = {
-      from: from,
-      to: to,
-      subject: subject,
-      html: emailBody
-    };
-
-    console.log(mailOptions);
-
-    transporter.sendMail(mailOptions, function(error, info){
-      if (error) {
-        console.log(error);
-      } else {
-
-        console.log('Email sent: ' + info.response);
-        callback();
-      }
-    });
-
-
-  }
-
-}
-
-*/
-
-
 
 
 //
@@ -66,60 +26,52 @@ class Mailer {
 
 
 
-  const sendNodemailer = (mailOptions) => {
-    return new Promise((resolve, reject) => {
+const sendNodemailer = (mailOptions) => {
+  return new Promise((resolve, reject) => {
 
-      var cred = getUserPass();
+    var cred = getUserPass();
 
-      // var transporter = nodemailer.createTransport({
-      //   service: 'gmail',
-      //   auth: {
-      //     user: 'classicweddingimages@gmail.com',
-      //     pass: 'cla123321'
-      //   }
-      // });
-
-      let transporter = nodemailer.createTransport({
-        pool: true,
-        host: 'port80.smtpcorp.com',
-        port: 80,
-        secure: false, // upgrade later with STARTTLS
-        auth: {
-            user: cred.user,
-            pass: cred.pass
-        }
-      });
-
-      console.log(mailOptions);
-      transporter.sendMail(mailOptions, function(error, info){
-
-        if (error) {
-          console.log(error);
-          reject(error);
-        } else {
-          console.log('Email sent: ' + info.response);
-          resolve(info.response);
-        }
-      });
+    let transporter = nodemailer.createTransport({
+      pool: true,
+      host: 'port80.smtpcorp.com',
+      port: 80,
+      secure: false, // upgrade later with STARTTLS
+      auth: {
+          user: process.env.SMTP2GO_USER || cred.user,
+          pass: process.env.SMTP2GO_PASS || cred.pass
+      }
     });
+
+    console.log(mailOptions);
+
+    transporter.sendMail(mailOptions, function(error, info){
+
+      if (error) {
+        console.log(error);
+        reject(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+        resolve(info.response);
+      }
+    });
+
+  });
+};
+
+
+const sendMail = async (from, to, subject, emailBody) => {
+
+  var mailOptions = {
+    from: from,
+    to: to,
+    subject: subject,
+    html: emailBody
   };
 
+  const mailReport = await sendNodemailer(mailOptions);
+  return mailReport;
 
-  const sendMail = async (from, to, subject, emailBody) => {
-
-    var mailOptions = {
-      from: from,
-      to: to,
-      subject: subject,
-      html: emailBody
-    };
-
-
-
-    const mailReport = await sendNodemailer(mailOptions);
-    return mailReport;
-
-  }
+}
 
 
 //var newEmail = new Mailer().send("soumik", "creativesoumik@yahoo.com", "email from node 2", "Hi Node!");
