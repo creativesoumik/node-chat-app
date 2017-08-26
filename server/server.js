@@ -6,7 +6,7 @@ const socketIO = require('socket.io');
 const {generateMessage, generateLocationMessage} = require('./utils/message');
 const {isRealString} = require('./utils/validation');
 const {Users} = require('./utils/users');
-const {Mailer} = require('./utils/mailer');
+const {sendMail} = require('./utils/mailer');
 
 
 
@@ -16,7 +16,6 @@ var app = express();
 var server = http.createServer(app);
 var io = socketIO(server);
 var users = new Users();
-var mailer = new Mailer();
 
 app.use(express.static(publicPath));
 
@@ -96,25 +95,19 @@ io.on('connection', (socket) => {
      var user = users.getUser(socket.id);
      if (user) {
 
-       mailer.send(`Soumik ChatApp<info@pixondesign.com>`, emails, 'Join my chat room', `
+       sendMail(`Soumik ChatApp<info@pixondesign.com>`, emails, 'Join my chat room', `
          <p>${user.name} has requested you to join his private chat room :</p>
-         <p><a href="https://obscure-springs-48742.herokuapp.com/?room=${user.room}">Go To Room</a></p>`, () => {
-           //call back
-         });
+         <p><a href="https://obscure-springs-48742.herokuapp.com/?room=${user.room}">Go To Room</a></p>`)
+         .then((mailReport) => {
 
-       socket.emit('newMessage', generateMessage('Admin', 'Your friends have been invited'));
+           console.log(mailReport);
+           socket.emit('newMessage', generateMessage('Admin', 'Your friends have been invited'));
+          callback();
+         }).catch((error) => {
+           callback(error);
+         });
      }
 
-
-    callback();
-
-    // send data to client by assigning object to the callback arguement
-
-    // socket.broadcast.emit('newMessage', {
-    //   from: message.from,
-    //   text: message.text,
-    //   createdAt: new Date().getTime()
-    // });
   });
 
 

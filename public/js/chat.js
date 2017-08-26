@@ -130,11 +130,21 @@ jQuery('#invite-form').on('submit', function(e){
     e.preventDefault();
 
     var invitedEmails = jQuery('[name=emails]');
+    $('#button').prop('disabled', true);
+    $('#button').text('Wait..');
+    socket.emit('sendInvitation',invitedEmails.val(),function(e){
 
-    socket.emit('sendInvitation',invitedEmails.val(),function(){
-      $('#invite-modal').modal('toggle', function () {
-        invitedEmails.val('');
-      });
+      if (e) {
+        console.log(e);
+        alert(e.response)
+        $('#button').prop('disabled', false);
+        $('#button').text('Send');
+      } else {
+        $('#invite-modal').modal('toggle', function () {
+          $('#button').prop('disabled', false);
+          $('#button').text('Send');
+        });
+      }
     });
 });
 
