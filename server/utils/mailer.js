@@ -4,10 +4,19 @@ var fs = require('fs');
 
 
 const getUserPass = ()=>{
-  var fs = require('fs');
-  var obj = JSON.parse(fs.readFileSync('server/utils/smtp-pass.json', 'utf8'));
-  console.log('********PASSWORDS*********',obj);
-  return obj;
+
+  if (process.env.SMTP2GO_USER && process.env.SMTP2GO_PASS) {
+    return {
+      user: process.env.SMTP2GO_USER,
+      pass: process.env.SMTP2GO_PASS
+    }
+  } else {
+    var fs = require('fs');
+    var obj = JSON.parse(fs.readFileSync('server/utils/smtp-pass.json', 'utf8'));
+    console.log('********PASSWORDS*********',obj);
+    return obj;
+  }
+
 }
 
 
@@ -37,8 +46,8 @@ const sendNodemailer = (mailOptions) => {
       port: 80,
       secure: false, // upgrade later with STARTTLS
       auth: {
-          user: process.env.SMTP2GO_USER || cred.user,
-          pass: process.env.SMTP2GO_PASS || cred.pass
+          user: cred.user,
+          pass: cred.pass
       }
     });
 
