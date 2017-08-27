@@ -102,7 +102,7 @@ io.on('connection', (socket) => {
 
            console.log(mailReport);
            socket.emit('newMessage', generateMessage('Admin', 'Your friends have been invited'));
-          callback();
+           callback();
          }).catch((error) => {
            callback(error);
          });
